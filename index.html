@@ -1817,7 +1817,10 @@
       { id: 'power', from: 'nbp-pwr', to: 'out-ac', label: 'Corriente Bar Pro', detail: 'Bar Pro PWR → Toma AC', type: 'PWR', color: '#fcd34d' },
     ];
     const TOTAL = CABLES.length;
-    const VALID = {}; CABLES.forEach(c => { VALID[c.from] = c.to; VALID[c.to] = c.from; });
+    const VALID={};
+    const POE_PORTS=new Set(['sw-p2','sw-p3']);
+    const POE_DEVICES=new Set(['pad-rj45','nc-eth']);
+CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
     const CCOLOR = {}; CABLES.forEach(c => { CCOLOR[c.from] = c.color; CCOLOR[c.to] = c.color; });
 
     // ══ PORT DEFINITIONS ══
@@ -1841,7 +1844,7 @@
       'nc-eth': { vx: 1100, vy: 445, label: 'NC ETH' },
       // Switch — BELOW switch (SW bottom=698), ports at vy=720
       'sw-p1': { vx: 598, vy: 780, label: 'P1' },
-      'sw-p2': { vx: 648, vy: 780, label: 'P2' },
+      'sw-p2': { vx: 648, vy: 780, label: 'PoE' },
       'sw-p3': { vx: 698, vy: 780, label: 'PoE' },
       'sw-up': { vx: 820, vy: 780, label: 'Uplink' },
       // Router ETH — BELOW router (RT bottom=695), port at vy=720
@@ -1960,7 +1963,8 @@
       } else {
         const from = STATE.selectedPort; STATE.selectedPort = null;
         if (from === portId) { renderPorts(); return; }
-        if (VALID[from] === portId) {
+        const isValidPoe = (POE_DEVICES.has(from) && POE_PORTS.has(portId)) || (POE_DEVICES.has(portId) && POE_PORTS.has(from));
+        if (VALID[from] === portId || isValidPoe) {
           STATE.connections.push({ from, to: portId });
           showOk('✓ ' + PORT_DEFS[from].label + ' → ' + PORT_DEFS[portId].label);
           renderCables(); updateProgress();
