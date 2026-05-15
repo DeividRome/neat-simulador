@@ -1997,7 +1997,13 @@ CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
     function updateProgress() {
       let done = 0;
       CABLES.forEach(c => {
-        const ok = STATE.connections.some(x => (x.from === c.from && x.to === c.to) || (x.from === c.to && x.to === c.from));
+        const ok=STATE.connections.some(x=>{
+  const exactMatch=(x.from===c.from&&x.to===c.to)||(x.from===c.to&&x.to===c.from);
+  const poeMatch=(POE_DEVICES.has(c.from)&&POE_PORTS.has(c.to))&&
+                 ((POE_DEVICES.has(x.from)&&POE_PORTS.has(x.to)&&x.from===c.from)||
+                  (POE_DEVICES.has(x.to)&&POE_PORTS.has(x.from)&&x.to===c.from));
+  return exactMatch||poeMatch;
+});
         const dot = document.getElementById('dot-' + c.id);
         const typeEl = document.getElementById('type-' + c.id);
         if (dot) { dot.classList.toggle('ok', ok); dot.innerHTML = ok ? '✓' : ''; }
