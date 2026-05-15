@@ -2218,6 +2218,7 @@ CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
     function resetSession() {
       if (!confirm('¿Reiniciar toda la sesión?')) return;
       if (firebaseReady && STATE.sessionCode) db.ref('sessions/' + STATE.sessionCode).remove();
+      sessionStorage.removeItem('neat_state');
       location.reload();
     }
 
