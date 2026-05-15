@@ -1968,6 +1968,7 @@ CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
           STATE.connections.push({ from, to: portId });
           showOk('✓ ' + PORT_DEFS[from].label + ' → ' + PORT_DEFS[portId].label);
           renderCables(); updateProgress();
+          saveSession();
         } else {
           STATE.errorCount++; renderPorts();
           showErr('❌ ' + PORT_DEFS[from].label + ' no conecta con ' + PORT_DEFS[portId].label);
@@ -2220,6 +2221,37 @@ CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
     }
 
     window.addEventListener('resize', () => { if (STATE.gameStarted) renderCables(); });
+    // Guardar estado en sessionStorage al hacer cambios
+function saveSession(){
+  if(!STATE.gameStarted) return;
+  sessionStorage.setItem('neat_state', JSON.stringify({
+    teamName: STATE.teamName,
+    memberName: STATE.memberName,
+    sessionCode: STATE.sessionCode,
+    isAdmin: STATE.isAdmin,
+    gameStarted: STATE.gameStarted,
+    elapsedSeconds: STATE.elapsedSeconds,
+    errorCount: STATE.errorCount,
+    connections: STATE.connections,
+    finished: STATE.finished,
+    finalTime: STATE.finalTime,
+    finalPos: STATE.finalPos
+  }));
+}
+
+// Restaurar estado al cargar
+function restoreSession(){
+  const saved = sessionStorage.getItem('neat_state');
+  if(!saved) return;
+  const s = JSON.parse(saved);
+  Object.assign(STATE, s);
+  if(STATE.gameStarted){
+    launchGame();
+    // Restaurar timer desde donde quedó
+    STATE.startTime = Date.now() - (STATE.elapsedSeconds * 1000);
+  }
+}
+restoreSession();
 
     // Touch support for port interaction
     document.addEventListener('DOMContentLoaded', () => {
