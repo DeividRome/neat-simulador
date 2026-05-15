@@ -2250,12 +2250,13 @@ function restoreSession(){
   launchGame();
   STATE.startTime = Date.now() - (STATE.elapsedSeconds * 1000);
   // Reconectar listener de Firebase
-  if(firebaseReady && STATE.sessionCode){
+ if(firebaseReady && STATE.sessionCode){
     listenLobby(STATE.sessionCode);
     if(STATE.isAdmin){
       db.ref('sessions/'+STATE.sessionCode+'/status').set('started');
     }
   }
+  }  
 }
 restoreSession();
 
