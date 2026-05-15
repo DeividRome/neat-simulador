@@ -1688,10 +1688,10 @@
         </div>
         <!--<div class="email-row">
           <input type="email" id="cert-email" placeholder="tucorreo@empresa.com">
-         
         </div>-->
         <button class="btn btn-outline-dark" style="width:100%;justify-content:center;margin-top:10px;" onclick="showLeaderboard()">Ver
           tabla de posiciones →</button>
+        <button class="btn btn-danger" style="width:100%;justify-content:center;margin-top:10px;" onclick="endSession()">✕ Terminar y salir</button>
       </div>
     </div>
   </div>
@@ -2210,6 +2210,10 @@ CABLES.forEach(c=>{VALID[c.from]=c.to; VALID[c.to]=c.from;});
       document.getElementById('ls-teams').textContent = '1'; document.getElementById('ls-done').textContent = '1';
       document.getElementById('ls-best').textContent = STATE.finalTime || '--'; document.getElementById('ls-avg').textContent = STATE.finalTime || '--';
       document.getElementById('ldr-tbody').innerHTML = `<tr class="rank1"><td><span class="rank-n">🥇</span></td><td><strong>${STATE.teamName || 'Tu equipo'}</strong></td><td style="color:var(--muted);font-size:12px;">${STATE.memberName || '—'}</td><td><div class="mini-prog"><div class="mini-prog-fill" style="width:100%"></div></div></td><td style="text-align:right;font-weight:700;">${STATE.finalTime}</td><td style="text-align:right;">${STATE.errorCount}</td><td style="text-align:right;"><span class="badge badge-green">Finalizado</span></td></tr>`;
+    }
+    function endSession(){
+      sessionStorage.removeItem('neat_state');
+      location.reload();
     }
     function resetSession() {
       if (!confirm('¿Reiniciar toda la sesión?')) return;
