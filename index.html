@@ -2246,9 +2246,14 @@ function restoreSession(){
   const s = JSON.parse(saved);
   Object.assign(STATE, s);
   if(STATE.gameStarted){
-    launchGame();
-    // Restaurar timer desde donde quedó
-    STATE.startTime = Date.now() - (STATE.elapsedSeconds * 1000);
+  launchGame();
+  STATE.startTime = Date.now() - (STATE.elapsedSeconds * 1000);
+  // Reconectar listener de Firebase
+  if(firebaseReady && STATE.sessionCode){
+    listenLobby(STATE.sessionCode);
+    if(STATE.isAdmin){
+      db.ref('sessions/'+STATE.sessionCode+'/status').set('started');
+    }
   }
 }
 restoreSession();
